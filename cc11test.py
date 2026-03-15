@@ -135,8 +135,8 @@ def crossValidationError(S, algo, k):
     accuracies = cross_val_score(model, X, y, cv=kf)
     return 1 - np.mean(accuracies)
 
-path1 = r"C:/Users/Syssou/Downloads/Init_data/Init/Ailleurs" 
-path2 = r"C:/Users/Syssou/Downloads/Init_data/Init/Mer"
+path1 = r"./Init/Ailleurs" 
+path2 = r"./Init/Mer"
 S = buildSampleFromPath(path1, path2)
 print("Nombre d'images chargees :", len(S))
 
