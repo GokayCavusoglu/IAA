@@ -62,10 +62,7 @@ class ImagePredictor:
         return prediction
 
     def predict_folder(self, folder_path, output_txt_path):
-        """
-        Parcourt toutes les images d'un dossier, effectue la prédiction et 
-        écrit les résultats dans un fichier texte au format : "nom_image +1" ou "nom_image -1".
-        """
+
         if not os.path.exists(folder_path):
             print(f"Le dossier '{folder_path}' n'existe pas.")
             return
@@ -79,8 +76,6 @@ class ImagePredictor:
                 try:
                     prediction = self.predict_image(file_path)
                     
-                    # On va écrire le résultat dans le fichier (ex: image.jpg +1)
-                    # On formate en rajoutant un '+' devant le 1 si la prédiction est positive
                     pred_str = "+1" if prediction == 1 else str(prediction)
                     
                     ligne = f"{filename} {pred_str}\n"
@@ -95,7 +90,7 @@ if __name__ == "__main__":
     
     nom_modele = "mon_modele_cc2.joblib"
     
-    dossier_a_tester = ("dossier du cc2")
+    dossier_a_tester = ("C:/Users/Syssou/Downloads/Data CC2/Data CC2")
     fichier_resultat = "resultats_predictions.txt"
     
     if os.path.exists(nom_modele):
