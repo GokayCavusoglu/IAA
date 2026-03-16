@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score, KFold
 import numpy as np
+import joblib
 
 def buildSampleFromPath(path1, path2):
     h = 200
@@ -135,8 +136,8 @@ def crossValidationError(S, algo, k):
     accuracies = cross_val_score(model, X, y, cv=kf)
     return 1 - np.mean(accuracies)
 
-path1 = r"./Init/Ailleurs" 
-path2 = r"./Init/Mer"
+path1 = r"./Init/Mer" 
+path2 = r"./Init/Ailleurs"
 S = buildSampleFromPath(path1, path2)
 print("Nombre d'images chargees :", len(S))
 
@@ -155,3 +156,7 @@ predictFromHisto(S, model)
 print("Résultats")
 print(f"Erreur empirique  : {erreurempirique(S)*100:.2f} %")
 print(f"Erreur Cross-Val  : {crossValidationError(S, algo, k=5)*100:.2f} %")
+
+nom_fichier_modele = "mon_modele_cc2.joblib"
+joblib.dump(model, nom_fichier_modele)
+print(f"Modele sauvgardé sous: {nom_fichier_modele}")
