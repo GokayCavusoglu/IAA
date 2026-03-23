@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "IAA",
+			"path": "."
+		},
+		{
+			"name": "Data CC2",
+			"path": "../Downloads/Data CC2/Data CC2"
+		},
+		{
+			"path": "../Downloads/Data CC2"
+		}
+	],
+	"settings": {}
+}

@@ -88,10 +88,10 @@ class ImagePredictor:
 
 if __name__ == "__main__":
     
-    nom_modele = "mon_modele_cc2.joblib"
+    nom_modele = "modele_svm_05.joblib"
     
     dossier_a_tester = ("C:/Users/Syssou/Downloads/Data CC2/Data CC2")
-    fichier_resultat = "resultats_predictions.txt"
+    fichier_resultat = "resultats_predictions_svm_05.txt"
     
     if os.path.exists(nom_modele):
         print("Chargement du prédicteur")

@@ -1,10 +1,12 @@
 import os
 from PIL import Image, ImageFilter
 import pandas as pd
-from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score, KFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 import numpy as np
 import joblib
 
@@ -97,10 +99,10 @@ def fitFromHisto(S, algo):
     X = [img["X_histo"] for img in S]
     y = [img["y_true_class"] for img in S]
     
-    if algo["name"] == "GaussianNB":
-        model = GaussianNB(**algo["hyper_param"])
-    elif algo["name"] == "RandomForest":
+    if algo["name"].startswith("RandomForest"):
         model = RandomForestClassifier(**algo["hyper_param"], random_state=42)
+    elif algo["name"].startswith("SVM"):
+        model = make_pipeline(StandardScaler(), SVC(**algo["hyper_param"], random_state=42))
     else:
         raise ValueError("Algorithme pas reconnu : " + algo["name"])
         
@@ -125,10 +127,10 @@ def crossValidationError(S, algo, k):
     X = [img["X_histo"] for img in S]
     y = [img["y_true_class"] for img in S]
 
-    if algo["name"] == "GaussianNB":
-        model = GaussianNB(**algo["hyper_param"])
-    elif algo["name"] == "RandomForest":
+    if algo["name"].startswith("RandomForest"):
         model = RandomForestClassifier(**algo["hyper_param"], random_state=42)
+    elif algo["name"].startswith("SVM"):
+        model = make_pipeline(StandardScaler(), SVC(**algo["hyper_param"], random_state=42))
     else:
         raise ValueError("Algorithme pas reconnu : " + algo["name"])
 
@@ -141,22 +143,37 @@ path2 = r"./Init/Ailleurs"
 S = buildSampleFromPath(path1, path2)
 print("Nombre d'images chargees :", len(S))
 
-algo = {
-    "name": "RandomForest", 
-    "hyper_param": {
-        "n_estimators": 200,
-        "max_depth": 3,
-        "min_samples_leaf": 10
+algos = [
+    {
+        "name": "RandomForest", 
+        "hyper_param": {
+            "n_estimators": 200,
+            "max_depth": 3,
+            "min_samples_leaf": 10
+        }
+    },
+    {
+        "name": "SVM (RBF, C=0.5)",
+        "hyper_param": {
+            "kernel": "rbf",
+            "C": 0.5,
+            "gamma": "scale"
+        }
     }
-}
+]
 
-model = fitFromHisto(S, algo)
-predictFromHisto(S, model)
+for algo in algos:
+    print(f"\nRésultats pour {algo['name']}")
+    model = fitFromHisto(S, algo)
+    predictFromHisto(S, model)
+    print(f"Erreur empirique  : {erreurempirique(S)*100:.2f} %")
+    print(f"Erreur Cross-Val  : {crossValidationError(S, algo, k=5)*100:.2f} %")
 
-print("Résultats")
-print(f"Erreur empirique  : {erreurempirique(S)*100:.2f} %")
-print(f"Erreur Cross-Val  : {crossValidationError(S, algo, k=5)*100:.2f} %")
-
-nom_fichier_modele = "mon_modele_cc2.joblib"
-joblib.dump(model, nom_fichier_modele)
-print(f"Modele sauvgardé sous: {nom_fichier_modele}")
+    #if algo["name"] == "RandomForest":
+        #nom_fichier_modele = "modele_random_forest.joblib"
+        #joblib.dump(model, nom_fichier_modele)
+        #print(f"Modele sauvgardé sous: {nom_fichier_modele}")
+    #elif algo["name"] == "SVM (RBF, C=0.5)":
+        #nom_fichier_modele = "modele_svm_05.joblib"
+        #joblib.dump(model, nom_fichier_modele)
+        #print(f"Modele sauvgardé sous: {nom_fichier_modele}")
