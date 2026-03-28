@@ -11,8 +11,8 @@ import numpy as np
 import joblib
 
 def buildSampleFromPath(path1, path2):
-    h = 200
-    l = 200
+    h = 64
+    l = 64
     S = []
     
     for path, target in [(path1, 1), (path2, -1)]:
@@ -22,7 +22,7 @@ def buildSampleFromPath(path1, path2):
 
             file_path = os.path.join(path, filename)
             
-            img = Image.open(file_path).convert("RGB")
+            img = Image.open(file_path).convert("HSV")
             img_resized = resizeImage(img, h, l)
             histo_original = computeHisto(img_resized)
             
@@ -156,7 +156,7 @@ algos = [
         "name": "SVM (RBF, C=0.5)",
         "hyper_param": {
             "kernel": "rbf",
-            "C": 0.5,
+            "C": 1,
             "gamma": "scale"
         }
     }
